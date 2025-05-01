@@ -1,6 +1,12 @@
 import { z } from 'zod';
 import { prisma } from '@/server/db';
 import { router, publicProcedure } from '@/server/trpc';
+interface PokemonModel {
+  id: number;
+  name: string;
+  types: string;
+  sprite: string;
+}
 
 export const pokemonRouter = router({
   getPokemon: publicProcedure
@@ -28,7 +34,7 @@ export const pokemonRouter = router({
         where: { name: { in: lowerInput } },
       });
 
-      return results.map((result: any) => ({
+      return results.map((result: PokemonModel) => ({
         id: result.id,
         name: result.name,
         types: result.types.split(','),
@@ -41,7 +47,7 @@ export const pokemonRouter = router({
         select: { types: true },
       });
       const typeSet = new Set<string>();
-      results.forEach((p: any) => p.types.split(',').forEach((t: any) => typeSet.add(t.trim())));
+      results.forEach((p: PokemonModel) => p.types.split(',').forEach((t: string) => typeSet.add(t.trim())));
       return Array.from(typeSet);
     }),
   getPokemonByType: publicProcedure
@@ -71,7 +77,7 @@ export const pokemonRouter = router({
 
       return {
         totalCount,
-        pokemons: results.map((result: any) => ({
+        pokemons: results.map((result: PokemonModel) => ({
           id: result.id,
           name: result.name,
           types: result.types.split(','),
@@ -93,7 +99,7 @@ export const pokemonRouter = router({
       });
       return {
         totalCount,
-        pokemons: results.map((result: any) => ({
+        pokemons: results.map((result: PokemonModel) => ({
           id: result.id,
           name: result.name,
           types: result.types.split(','),
