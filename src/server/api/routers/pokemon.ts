@@ -47,7 +47,7 @@ export const pokemonRouter = router({
         select: { types: true },
       });
       const typeSet = new Set<string>();
-      results.forEach((p: PokemonModel) => p.types.split(',').forEach((t: string) => typeSet.add(t.trim())));
+      results.forEach((p: { types: string }) => p.types.split(',').forEach((t: string) => typeSet.add(t.trim())));
       return Array.from(typeSet);
     }),
   getPokemonByType: publicProcedure
